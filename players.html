@@ -1,0 +1,468 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PLAYERS | KINDAI SOCCER</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #066898;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      padding: 25px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #333;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-size: 13px;
+    }
+
+    main {
+      padding: 70px 8%;
+    }
+
+    h1 {
+      font-size: clamp(48px, 9vw, 100px);
+      margin: 0;
+      letter-spacing: -3px;
+    }
+
+    .subtitle {
+      color: #aaa;
+      letter-spacing: 3px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 10px;
+      margin: 45px 0 35px;
+      flex-wrap: wrap;
+    }
+
+    .filters button {
+      background: transparent;
+      color: white;
+      border: 1px solid #777;
+      padding: 12px 22px;
+      cursor: pointer;
+    }
+
+    .filters button.active {
+      background: white;
+      color: black;
+    }
+
+    .players-grid {
+      display: grid;
+      grid-template-columns:
+        repeat(auto-fill, minmax(220px, 1fr));
+      gap: 25px;
+    }
+
+    .player {
+      background: #066898;
+      overflow: hidden;
+    }
+
+    .player-photo {
+      height: 280px;
+      background: #066898;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #888;
+    }
+
+    .player-info {
+      padding: 20px;
+    }
+
+    .number {
+      font-size: 40px;
+      font-weight: 900;
+    }
+
+    .player-name {
+      font-size: 18px;
+    }
+
+    .position {
+      color: #aaa;
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+
+      main {
+        padding: 45px 5%;
+      }
+
+      .players-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .player-photo {
+        height: 190px;
+      }
+    }
+  
+.player {
+  cursor: pointer;
+}
+
+.player:hover {
+  transform: translateY(-5px);
+  transition: 0.3s;
+}
+
+.profile-modal[hidden] {
+  display: none;
+}
+
+.profile-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.profile-box {
+  background: #222;
+  color: white;
+  padding: 40px;
+  width: 100%;
+  max-width: 500px;
+  position: relative;
+  line-height: 2;
+}
+
+.close-button {
+  position: absolute;
+  right: 20px;
+  top: 15px;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.player-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.profile-photo {
+  width: 100%;
+  height: 280px;
+  object-fit: contain;
+  background: #333;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.profile-box {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.profile-modal[hidden] {
+  display: none;
+}
+
+.player-photo {
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  background: #333;
+}
+
+.player-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+.player {
+  cursor: pointer;
+}
+
+.player:hover .player-photo img {
+  transform: scale(1.05);
+  transition: transform 0.3s;
+}
+
+.player {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.player-photo {
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+}
+
+.player-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.player-info {
+  padding: 20px;
+}
+</style>
+  
+</head>
+
+<body>
+
+  <header>
+    <div class="logo">KINDAI SOCCER</div>
+    <nav>
+  <a href="index.html">HOME</a>
+  <a href="players.html">PLAYERS</a>
+</nav>
+  </header>
+
+  <main>
+    <h1>PLAYERS.</h1>
+    <p class="subtitle">2027 TEAM MEMBERS</p>
+
+    <div class="filters">
+      <button class="active" onclick="showGrade('4', this)">4年生</button>
+      <button onclick="showGrade('3', this)">3年生</button>
+      <button onclick="showGrade('2', this)">2年生</button>
+      <button onclick="showGrade('1', this)">1年生</button>
+      <button onclick="showGrade('staff', this)">STAFF</button>
+    </div>
+
+    <div class="players-grid" id="players-grid"></div>
+
+
+  <script>
+    function showGrade(grade, button) {
+      document.querySelectorAll(".player").forEach(player => {
+        player.style.display =
+          player.dataset.grade === grade ? "block" : "none";
+      });
+
+      document.querySelectorAll(".filters button").forEach(btn => {
+        btn.classList.remove("active");
+      });
+
+      button.classList.add("active");
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const firstButton = document.querySelector(".filters button");
+      showGrade("4", firstButton);
+    });
+  </script>
+
+
+
+<div id="profile-modal" class="profile-modal" hidden>
+  <div class="profile-box">
+
+    <button class="close-button"
+            onclick="closeProfile()">×</button>
+
+    <img id="profile-photo"
+         class="profile-photo"
+         alt="選手写真">
+
+    <h2 id="profile-name"></h2>
+
+    <p id="profile-number"></p>
+    <p id="profile-position"></p>
+    <p id="profile-grade"></p>
+    <p id="profile-school"></p>
+    <p id="profile-faculty"></p>
+    <p id="profile-birthday"></p>
+    <p id="profile-mbti"></p>
+
+  </div>
+</div>
+
+  </div>
+</div>
+
+<script>
+  
+function openProfile(
+  number, name, position, grade,
+  school, faculty, birthday, mbti, photo
+) {
+  document.getElementById("profile-number").textContent =
+    "背番号：" + number;
+
+  document.getElementById("profile-name").textContent = name;
+
+  document.getElementById("profile-position").textContent =
+    "ポジション：" + position;
+
+  document.getElementById("profile-grade").textContent =
+    "学年：" + grade;
+
+  document.getElementById("profile-school").textContent =
+    "出身高校：" + school;
+
+  document.getElementById("profile-faculty").textContent =
+    "学部：" + faculty;
+
+  document.getElementById("profile-birthday").textContent =
+    "誕生日：" + birthday;
+
+  document.getElementById("profile-mbti").textContent =
+    "MBTI：" + mbti;
+
+  document.getElementById("profile-photo").src = photo;
+
+  document.getElementById("profile-modal").hidden = false;
+}
+
+
+  function closeProfile() {
+    document.getElementById("profile-modal").hidden = true;
+  }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.5.3/papaparse.min.js"></script>
+
+<script>
+const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTRJGCUzHCh7a4Zro-9baH9Vq3kXzCRQj5_dVTv3gqN4lwEuI4yP0mgL0iiot5T7J-X-c6-TOB-tzQ_/pub?gid=0&single=true&output=csv";
+
+function convertPhoto(url) {
+  const match = url.match(/\/file\/d\/([^/]+)/);
+
+  if (match) {
+    return "https://drive.google.com/thumbnail?id="
+      + match[1] + "&sz=w1000";
+  }
+
+  return url;
+}
+
+fetch(sheetURL, { cache: "no-store" })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error("HTTP " + response.status);
+    }
+    return response.text();
+  })
+  .then(csv => {
+    Papa.parse(csv, {
+      skipEmptyLines: true,
+
+  complete: function(results) {
+    const grid = document.getElementById("players-grid");
+    grid.innerHTML = "";
+
+    results.data.slice(1).forEach(row => {
+      if (!row[1]) return;
+
+      const number = row[0];
+      const name = row[1];
+      const grade = row[2].trim();
+      const position = row[3];
+      const school = row[4];
+      const faculty = row[5];
+      const birthday = row[6];
+      const mbti = row[7];
+      const photo = convertPhoto(row[8] || "");
+
+      const card = document.createElement("div");
+      card.className = "player";
+      card.dataset.grade = grade;
+
+      card.innerHTML = `
+        <div class="player-photo"></div>
+        <div class="player-info">
+          <div class="number"></div>
+          <h2 class="player-name"></h2>
+          <p class="position"></p>
+        </div>
+      `;
+
+      const img = document.createElement("img");
+      if (photo) img.src = photo;
+      img.alt = name + "の写真";
+
+      card.querySelector(".player-photo").appendChild(img);
+      card.querySelector(".number").textContent = number;
+      card.querySelector(".player-name").textContent = name;
+      card.querySelector(".position").textContent =
+        position;
+
+      card.onclick = function() {
+        openProfile(
+          number, name, position,
+          grade === "staff" ? "STAFF" : grade + "年生",
+          school, faculty, birthday, mbti, photo
+        );
+      };
+
+      card.style.display =
+        grade === "4" ? "" : "none";
+
+          grid.appendChild(card);
+  });
+},
+
+error: function(err, file) {
+  console.error("CSV ERROR:", err, file);
+  document.getElementById("players-grid").textContent =
+    "読み込みエラー：" + String(err);
+}
+
+});
+  })
+  .catch(err => {
+    console.error(err);
+    document.getElementById("players-grid").textContent =
+      "読み込みエラー：" + err.message;
+  });
+
+
+
+</script>
+</body>
+</html>

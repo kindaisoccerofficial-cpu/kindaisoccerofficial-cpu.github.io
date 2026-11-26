@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>近畿大学体育会サッカー部</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <style>
+.match-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.match-link:hover {
+  opacity: 0.8;
+  cursor: pointer;
+}
+.player-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.player-link:hover {
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0772a7;
+      color: white;
+    }
+
+    header {
+      background: #0772a7;
+      color: white;
+      padding: 24px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-right: 20px;
+      font-size: 13px;
+    }
+
+    .hero {
+      background: #0772a7;
+      color: white;
+      min-height: 500px;
+      padding: 110px 8%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .hero h1 {
+      font-size: clamp(45px, 9vw, 110px);
+      line-height: 0.95;
+      margin: 0;
+      letter-spacing: -2px;
+    }
+
+    .hero p {
+         font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  margin-top: 20px;
+}
+     
+
+    section {
+      padding: 70px 8%;
+    }
+
+    h2 {
+      font-size: 32px;
+      margin-bottom: 30px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(
+        auto-fit, minmax(220px, 1fr)
+      );
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 35px 25px;
+      border: 1px solid #ddd;
+    }
+
+    .card h3 {
+      font-size: 22px;
+    }
+
+    footer {
+      background: #0772a7;
+      color: white;
+      text-align: center;
+      padding: 35px;
+      font-size: 12px;
+    }
+  
+/* トップページ全体 */
+.hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 90vh;
+  background: #111;
+}
+
+/* スライドショー */
+.slideshow {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.slide.active {
+  opacity: 1;
+  z-index: 2;
+}
+
+.slide.exit {
+  opacity: 1;
+  z-index: 1;
+}
+
+.slide.reset {
+  transition: none;
+}
+
+
+/* 写真を少し暗くする */
+.slideshow::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,0.8),
+    rgba(0,0,0,0.1)
+  );
+}
+
+/* 文字を写真の手前に表示 */
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-content p {
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  margin-top: 20px;
+}
+
+/* 動きを減らす設定の人には静止表示 */
+@media (prefers-reduced-motion: reduce) {
+  .slide {
+    animation: none;
+  }
+  .slide1 {
+    opacity: 1;
+  }
+}
+#latest-news {
+  margin: 30px 0;
+}
+
+.latest-news-card {
+  display: block;
+  background: white;
+  color: #111;
+  padding: 25px;
+  margin-bottom: 15px;
+  text-decoration: none;
+}
+
+.latest-news-date {
+  font-size: 16px;
+  color: #777;
+}
+
+.latest-news-category {
+  color: #0772a7;
+  font-weight: bold;
+  margin-left: 20px;
+}
+
+.latest-news-title {
+  font-size: 24px;
+  font-weight: 800;
+  margin: 12px 0 0;
+}
+
+.news-more {
+  display: block;
+  color: white;
+  text-align: right;
+  font-weight: bold;
+  text-decoration: none;
+  margin-top: 25px;
+}#contact {
+  text-align: center;
+  padding: 80px 20px;
+  background: #0772a7;
+  color: white;
+}
+
+#contact h2 {
+  font-size: 50px;
+  font-weight: 900;
+}
+
+#contact p {
+  line-height: 2;
+}
+
+.contact-button {
+  display: inline-block;
+  border: 1px solid white;
+  padding: 20px 60px;
+  margin-top: 30px;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.contact-button:hover {
+  background: white;
+  color: #0772a7;
+}
+#sns {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.sns-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 50px;
+  margin-top: 35px;
+}
+
+.sns-links a {
+  color: white;
+  font-size: 70px;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.sns-links a:hover {
+  opacity: 0.6;
+  transform: translateY(-5px);
+}
+#standings {
+  padding: 70px 8%;
+}
+
+#standings h2 {
+  font-size: 42px;
+  margin-bottom: 10px;
+}
+
+#standings-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 30px 0;
+}
+
+.standings-tab {
+  background: transparent;
+  color: white;
+  border: 1px solid white;
+  padding: 15px 25px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.standings-tab.active {
+  background: white;
+  color: #0772a7;
+}
+
+#standings-league {
+  font-size: 24px;
+  margin: 30px 0 20px;
+}
+
+.standings-scroll {
+  overflow-x: auto;
+}
+
+#standings-table {
+  width: 100%;
+  min-width: 650px;
+  border-collapse: collapse;
+  background: white;
+  color: #222;
+}
+
+#standings-table th {
+  background: #0772a7;
+  color: white;
+  padding: 18px 10px;
+  font-size: 14px;
+}
+
+#standings-table td {
+  padding: 18px 10px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+  font-size: 16px;
+}
+
+#standings-table td:nth-child(2) {
+  text-align: left;
+  font-weight: bold;
+}
+
+#standings-table td:last-child {
+  font-weight: 900;
+}
+
+#standings-table tr.kindai-row {
+  background: #ded8ff;
+  color: #0772a7;
+  font-weight: bold;
+}</style>
+</head>
+
+<body>
+
+  <header>
+    <div class="logo">KINDAI SOCCER</div>
+    
+<nav>
+  <a href="#home">HOME</a>
+  <a href="team.html">TEAM</a>
+  <a href="players.html">PLAYERS</a>
+  <a href="match.html">MATCH</a>
+  <a href="news.html">NEWS</a>
+  <a href="#about">ABOUT</a>
+</nav>
+
+  </header>
+
+ 
+<div class="hero" id="home">
+
+  <div class="slideshow" id="home-slideshow"></div>
+
+  <div class="hero-content">
+    <h1>KINDAI<br>SOCCER</h1>
+    <p>近畿大学体育会サッカー部</p>
+  </div>
+
+</div>
+
+<section id="news">
+  <h2>NEWS</h2>
+  <div id="latest-news">読み込み中...</div>
+  <a href="news.html" class="news-more">VIEW ALL NEWS →</a>
+</section>
+  
+<section id="standings">
+  <h2>STANDINGS</h2>
+  <p>リーグ順位表</p>
+
+  <div id="standings-tabs"></div>
+
+  <h3 id="standings-league"></h3>
+
+  <div class="standings-scroll">
+    <table id="standings-table">
+      <thead>
+        <tr>
+          <th>順位</th>
+          <th>チーム</th>
+          <th>試合</th>
+          <th>勝</th>
+          <th>分</th>
+          <th>負</th>
+          <th>得点</th>
+          <th>失点</th>
+          <th>得失差</th>
+          <th>勝点</th>
+        </tr>
+      </thead>
+      <tbody id="standings-body"></tbody>
+    </table>
+  </div>
+
+  <p id="standings-error"></p>
+</section>
+
+  <section id="match">
+    <h2>MATCH RESULTS</h2>
+    <div class="cards">
+      <a href="match.html" class="match-link">
+  <div class="card">
+    <h3>MATCH LIST</h3>
+    <p>試合日程・結果</p>
+  </div>
+</a>
+    </div>
+  </section>
+
+  <section id="sns">
+  <h2>FOLLOW US</h2>
+  <p>近畿大学体育会サッカー部 公式SNS</p>
+
+  <div class="sns-links">
+
+    <a href="https://www.instagram.com/kindai_soccer?srtk=MTJmNnQ3cXkxeTgwaA%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer">
+      <i class="fa-brands fa-instagram"></i>
+    </a>
+
+    <a href="https://x.com/univkinki?s=11&t=MY4MIKZMJYIsIx39GIdohg" target="_blank" rel="noopener noreferrer">
+      <i class="fa-brands fa-x-twitter"></i>
+    </a>
+
+    <a href="TikTokのURL" target="_blank" rel="noopener noreferrer">
+      <i class="fa-brands fa-tiktok"></i>
+    </a>
+
+    <a href="https://youtube.com/channel/UC6jyxJ6b_l4jFpY5EmhbEgg?si=Ca_2fSX98CGd4hmO" target="_blank" rel="noopener noreferrer">
+      <i class="fa-brands fa-youtube"></i>
+    </a>
+
+  </div>
+</section>
+
+  <footer>
+    © KINDAI SOCCER 
+  </footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.5.3/papaparse.min.js"></script>
+
+<script>
+const homeNewsURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTRJGCUzHCh7a4Zro-9baH9Vq3kXzCRQj5_dVTv3gqN4lwEuI4yP0mgL0iiot5T7J-X-c6-TOB-tzQ_/pub?gid=1984553964&single=true&output=csv";
+
+fetch(homeNewsURL)
+  .then(response => {
+    if (!response.ok) throw new Error("通信エラー");
+    return response.text();
+  })
+  .then(csv => {
+    const results = Papa.parse(csv, {
+      skipEmptyLines: true
+    });
+
+    const rows = results.data.slice(1)
+      .filter(row =>
+        row[2] && String(row[6]).trim() === "公開"
+      )
+      .sort((a, b) =>
+        new Date(b[0].replace(/\./g, "/")) -
+        new Date(a[0].replace(/\./g, "/"))
+      )
+      .slice(0, 3);
+
+    const list = document.getElementById("latest-news");
+    list.innerHTML = "";
+
+    rows.forEach(row => {
+      const card = document.createElement("a");
+      card.className = "latest-news-card";
+      card.href = "news.html";
+
+      card.innerHTML = `
+        <span class="latest-news-date"></span>
+        <span class="latest-news-category"></span>
+        <h3 class="latest-news-title"></h3>
+      `;
+
+      card.querySelector(".latest-news-date").textContent = row[0];
+      card.querySelector(".latest-news-category").textContent = row[1];
+      card.querySelector(".latest-news-title").textContent = row[2];
+
+      list.appendChild(card);
+    });
+
+    if (rows.length === 0) {
+      list.textContent = "現在お知らせはありません。";
+    }
+  })
+  .catch(error => {
+    document.getElementById("latest-news").textContent =
+      "お知らせを読み込めませんでした";
+  });
+</script>
+<section id="contact">
+  <h2>CONTACT</h2>
+
+  <p>近畿大学体育会サッカー部へのお問い合わせは、
+    下記よりお願いいたします。</p>
+
+  <a href="mailto:kindai.soccer.official@gmail.com"
+     class="contact-button">
+    お問い合わせ →
+  </a>
+</section>
+
+<script>
+const homePhotoURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTRJGCUzHCh7a4Zro-9baH9Vq3kXzCRQj5_dVTv3gqN4lwEuI4yP0mgL0iiot5T7J-X-c6-TOB-tzQ_/pub?gid=698804474&single=true&output=csv";
+
+function homePhotoLink(url) {
+  const match = url.match(/\/file\/d\/([^/]+)/);
+
+  if (match) {
+    return "https://drive.google.com/thumbnail?id="
+      + match[1] + "&sz=w1600";
+  }
+
+  return url;
+}
+
+function startSlideshow(photos) {
+  const container = document.getElementById("home-slideshow");
+
+  container.innerHTML = "";
+
+  photos.forEach((url, index) => {
+    const slide = document.createElement("div");
+    slide.className = "slide";
+
+    if (index === 0) {
+      slide.classList.add("active");
+    }
+
+    slide.style.backgroundImage = `url("${url}")`;
+    container.appendChild(slide);
+  });
+
+  const slides = container.querySelectorAll(".slide");
+  let current = 0;
+
+  if (slides.length <= 1) return;
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  setInterval(() => {
+  const previous = slides[current];
+
+  previous.classList.add("exit");
+  previous.classList.remove("active");
+
+  current = (current + 1) % slides.length;
+
+  slides[current].classList.add("active");
+
+  setTimeout(() => {
+    previous.classList.remove("exit");
+  }, 850);
+
+}, 5000);
+}
+
+fetch(homePhotoURL)
+  .then(response => {
+    if (!response.ok) throw new Error("通信エラー");
+    return response.text();
+  })
+  .then(csv => {
+    const results = Papa.parse(csv, {
+      skipEmptyLines: true
+    });
+
+    const photos = results.data.slice(1)
+      .filter(row =>
+        row[0] && String(row[2]).trim() === "公開"
+      )
+      .sort((a, b) => Number(a[1]) - Number(b[1]))
+      .map(row => homePhotoLink(row[0].trim()));
+
+    if (!photos.length) throw new Error("写真未登録");
+
+    startSlideshow(photos);
+  })
+  .catch(error => {
+    console.error(error);
+
+    startSlideshow([
+      "images/team1.jpg",
+      "images/team2.jpg",
+      "images/team3.jpg"
+    ]);
+  });
+</script>
+
+<script>
+const standingsURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTRJGCUzHCh7a4Zro-9baH9Vq3kXzCRQj5_dVTv3gqN4lwEuI4yP0mgL0iiot5T7J-X-c6-TOB-tzQ_/pub?gid=1645391856&single=true&output=csv";
+
+let standingsData = [];
+
+fetch(standingsURL)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error("通信エラー");
+    }
+    return response.text();
+  })
+  .then(csv => {
+    const results = Papa.parse(csv, {
+      skipEmptyLines: true
+    });
+
+    standingsData = results.data.slice(1)
+      .filter(row => row[0] && row[3])
+      .map(row => row.map(value => String(value).trim()));
+
+    const categories = [
+      ...new Set(standingsData.map(row => row[0]))
+    ];
+
+    const tabs = document.getElementById("standings-tabs");
+
+    tabs.innerHTML = "";
+
+    categories.forEach((category, index) => {
+      const button = document.createElement("button");
+
+      button.className = "standings-tab";
+      button.textContent = category;
+
+      button.onclick = () => {
+        showStandings(category, button);
+      };
+
+      tabs.appendChild(button);
+
+      if (index === 0) {
+        showStandings(category, button);
+      }
+    });
+
+    if (categories.length === 0) {
+      document.getElementById("standings-error")
+        .textContent = "現在、順位表はありません。";
+    }
+  })
+  .catch(error => {
+    document.getElementById("standings-error")
+      .textContent = "順位表を読み込めませんでした。";
+    console.error(error);
+  });
+
+function showStandings(category, button) {
+
+  document.querySelectorAll(".standings-tab")
+    .forEach(tab => tab.classList.remove("active"));
+
+  button.classList.add("active");
+
+  const rows = standingsData
+    .filter(row => row[0] === category)
+    .sort((a, b) => Number(a[2]) - Number(b[2]));
+
+  document.getElementById("standings-league")
+    .textContent = rows[0] ? rows[0][1] : "";
+
+  const tbody = document.getElementById("standings-body");
+
+  tbody.innerHTML = "";
+
+  rows.forEach(row => {
+    const tr = document.createElement("tr");
+
+    if (row[3].includes("近畿大学")) {
+      tr.classList.add("kindai-row");
+    }
+
+    row.slice(2, 12).forEach(value => {
+      const td = document.createElement("td");
+      td.textContent = value;
+      tr.appendChild(td);
+    });
+
+    tbody.appendChild(tr);
+  });
+}
+</script>
+</body>
+</html>

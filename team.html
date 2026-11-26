@@ -1,0 +1,211 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TEAM | KINDAI SOCCER</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #066898;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      padding: 25px 6%;
+      border-bottom: 1px solid #333;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-size: 13px;
+    }
+
+    main {
+      padding: 70px 8%;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    h1 {
+      font-size: clamp(50px, 9vw, 100px);
+      margin: 0;
+    }
+
+    .subtitle {
+      color: #aaa;
+      letter-spacing: 3px;
+      margin-bottom: 50px;
+    }
+
+    .team-photo {
+      width: 100%;
+      height: 420px;
+      object-fit: cover;
+      background: #333;
+    }
+
+    h2 {
+      font-size: 32px;
+      margin-top: 60px;
+    }
+
+    .description {
+      line-height: 2.2;
+      color: #ccc;
+      max-width: 800px;
+    }
+
+    @media (max-width: 600px) {
+      main { padding: 45px 5%; }
+      .team-photo { height: 240px; }
+    }
+  #season-goal {
+  font-size: clamp(32px, 6vw, 60px);
+  font-weight: 900;
+  text-align: center;
+  padding: 40px 0;
+  white-space: pre-wrap;
+}
+
+.team-profile {
+  margin-top: 30px;
+}
+
+.team-profile div {
+  display: grid;
+  grid-template-columns: 30% 1fr;
+  gap: 15px;
+  padding: 25px 10px;
+  border-bottom: 1px solid #ffffff55;
+  font-size: 20px;
+}
+
+.team-profile span {
+  color: #ccc;
+}
+
+.team-profile strong {
+  color: white;
+}
+
+.team-photo[hidden] {
+  display: none;
+}</style>
+</head>
+
+<body>
+
+  <header>
+    <div class="logo">KINDAI SOCCER</div>
+
+    <nav>
+      <a href="index.html">HOME</a>
+      <a href="team.html">TEAM</a>
+      <a href="players.html">PLAYERS</a>
+      <a href="match.html">MATCH</a>
+      <a href="index.html#about">ABOUT</a>
+    </nav>
+  </header>
+
+  <main>
+  <h1>TEAM</h1>
+  <p class="subtitle">ABOUT OUR TEAM</p>
+
+  <img id="team-photo" class="team-photo"
+       alt="集合写真" hidden>
+
+  <h2 id="team-name"></h2>
+
+  <p class="description">
+    近畿大学体育会サッカー部の公式ホームページです。
+    チームの活動や試合情報、選手・スタッフの紹介などを
+    発信していきます。
+  </p>
+
+  <h2>SEASON SLOGAN</h2>
+  <p id="season-goal"></p>
+
+  <h2>TEAM PROFILE</h2>
+
+  <div class="team-profile">
+    <div><span>所属リーグ</span><strong id="league"></strong></div>
+    <div><span>部員数</span><strong id="members"></strong></div>
+    <div><span>監督</span><strong id="coach"></strong></div>
+    <div><span>主将</span><strong id="captain"></strong></div>
+    <div><span>活動場所</span><strong id="location"></strong></div>
+  </div>
+
+  <p id="team-error"></p>
+</main>
+
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.5.3/papaparse.min.js"></script>
+
+<script>
+const teamURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTRJGCUzHCh7a4Zro-9baH9Vq3kXzCRQj5_dVTv3gqN4lwEuI4yP0mgL0iiot5T7J-X-c6-TOB-tzQ_/pub?gid=931781114&single=true&output=csv";
+
+function convertPhoto(url) {
+  const match = url.match(/\/file\/d\/([^/]+)/);
+
+  if (match) {
+    return "https://drive.google.com/thumbnail?id="
+      + match[1] + "&sz=w1600";
+  }
+
+  return url;
+}
+
+fetch(teamURL)
+  .then(response => {
+    if (!response.ok) throw new Error("通信エラー");
+    return response.text();
+  })
+  .then(csv => {
+    const results = Papa.parse(csv, {
+      skipEmptyLines: true
+    });
+
+    const row = results.data[1];
+
+    if (!row) throw new Error("チーム情報が未入力です");
+
+    document.getElementById("team-name").textContent = row[0];
+    document.getElementById("league").textContent = row[1];
+    document.getElementById("members").textContent = row[2];
+    document.getElementById("coach").textContent = row[3];
+    document.getElementById("captain").textContent = row[4];
+    document.getElementById("season-goal").textContent = row[5];
+    document.getElementById("location").textContent = row[6];
+
+    const photo = document.getElementById("team-photo");
+
+    if (row[7]) {
+      photo.src = convertPhoto(row[7]);
+      photo.hidden = false;
+    }
+  })
+  .catch(error => {
+    document.getElementById("team-error").textContent =
+      "読み込みエラー：" + error.message;
+  });
+</script>
+</body>
+</html>

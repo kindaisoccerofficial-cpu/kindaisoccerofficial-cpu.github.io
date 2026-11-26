@@ -1,0 +1,296 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MATCH | KINDAI SOCCER</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #066898;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      padding: 25px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #066898;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-size: 13px;
+    }
+
+    main {
+      padding: 70px 8%;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    h1 {
+      font-size: clamp(50px, 9vw, 100px);
+      margin: 0;
+    }
+
+    .subtitle {
+      color: #aaa;
+      letter-spacing: 3px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 12px;
+      margin: 45px 0 30px;
+    }
+
+    .tabs button {
+      padding: 14px 28px;
+      background: transparent;
+      color: white;
+      border: 1px solid #777;
+      cursor: pointer;
+    }
+
+    .tabs button.active {
+      background: white;
+      color: black;
+    }
+
+    .match-card {
+      background: #222;
+      padding: 30px;
+      margin-bottom: 18px;
+    }
+
+    .match-date {
+      color: white;
+      font-size: 13px;
+    }
+
+    .match-teams {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin: 30px 0;
+      text-align: center;
+    }
+
+    .team {
+      flex: 1;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .score {
+      font-size: 32px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .venue {
+      color: white;
+      font-size: 18px;
+    }
+
+    .match-card[hidden] {
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      main { padding: 45px 5%; }
+      .match-card { padding: 18px; }
+      .team { font-size: 14px; }
+      .score { font-size: 24px; }
+    }
+  .match-date {
+  font-size: 35px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin: 15px 0;
+}.match-card .league {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 15px;
+}
+
+.match-card .team {
+  font-size: 32px;
+  font-weight: 900;
+}
+
+.match-card .score {
+  font-size: 42px;
+  font-weight: 900;
+}.match-card .kindai {
+  color: #0075d2;
+}.score-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.match-card .match-result {
+  font-size: 35px;
+  font-weight: 900;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.match-result:empty {
+  display: none;
+}</style>
+</head>
+
+<body>
+
+  <header>
+    <div class="logo">KINDAI SOCCER</div>
+    <nav>
+      <a href="index.html">HOME</a>
+      <a href="players.html">PLAYERS</a>
+      <a href="match.html">MATCH</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>MATCH.</h1>
+    <p class="subtitle">MATCH SCHEDULE & RESULTS</p>
+
+    <div class="tabs">
+      <button class="active"
+        onclick="showMatches('schedule', this)">
+        SCHEDULE
+      </button>
+      <button onclick="showMatches('results', this)">
+        RESULTS
+      </button>
+    </div>
+
+    <!-- ここから試合日程 -->
+    <div id="match-list"></div>
+
+  </main>
+
+  <script>
+    function showMatches(type, button) {
+      document.querySelectorAll(".match-card").forEach(card => {
+        card.hidden = card.dataset.type !== type;
+      });
+
+      document.querySelectorAll(".tabs button").forEach(btn => {
+        btn.classList.remove("active");
+      });
+
+      button.classList.add("active");
+    }
+  </script>
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.5.3/papaparse.min.js"></script>
+
+<script>
+const matchURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTRJGCUzHCh7a4Zro-9baH9Vq3kXzCRQj5_dVTv3gqN4lwEuI4yP0mgL0iiot5T7J-X-c6-TOB-tzQ_/pub?gid=1000584120&single=true&output=csv";
+
+Papa.parse(matchURL, {
+  download: true,
+  skipEmptyLines: true,
+
+  complete: function(results) {
+    const list = document.getElementById("match-list");
+    list.innerHTML = "";
+
+    const rows = results.data.slice(1).filter(row => row[5]);
+
+    rows.sort((a, b) =>
+      a[0].localeCompare(b[0], "ja", { numeric: true })
+    );
+
+    rows.forEach(row => {
+      const [date, time, category, league, round,
+        opponent, venue, ourScore, theirScore, status] = row;
+
+      const finished = status.trim() === "終了";
+
+      let result = "";
+
+      if (finished && ourScore !== "" && theirScore !== "") {
+        result = Number(ourScore) > Number(theirScore)
+          ? "WIN"
+          : Number(ourScore) < Number(theirScore)
+          ? "LOSE"
+          : "DRAW";
+      }
+
+      const card = document.createElement("div");
+      card.className = "match-card";
+      card.dataset.type = finished ? "results" : "schedule";
+
+      card.innerHTML = `
+        <p class="league"></p>
+        <h2 class="match-date"></h2>
+
+        <div class="match-teams">
+          <div class="team kindai">近畿大学</div>
+          <div class="score-box">
+  <div class="score"></div>
+  <p class="match-result"></p>
+</div>
+          <div class="team opponent"></div>
+        </div>
+
+        <p class="venue"></p>
+        <p class="match-result"></p>
+      `;
+
+      card.querySelector(".league").textContent =
+        category + " / " + league + " " + round;
+
+      card.querySelector(".match-date").textContent =
+        date + " " + time;
+
+      card.querySelector(".score").textContent =
+        finished ? ourScore + " - " + theirScore : "VS";
+
+      card.querySelector(".opponent").textContent = opponent;
+      card.querySelector(".venue").textContent = "会場：" + venue;
+      card.querySelector(".match-result").textContent = result;
+
+      list.appendChild(card);
+    });
+
+    const active = document.querySelector(".tabs button.active")
+      || document.querySelector(".tabs button");
+
+    const type = active.textContent.toUpperCase().includes("RESULT")
+      ? "results" : "schedule";
+
+    showMatches(type, active);
+  },
+
+  error: function(err) {
+    console.error(err);
+    document.getElementById("match-list").textContent =
+      "試合情報を読み込めませんでした";
+  }
+});
+</script>
+
+</body>
+</html>

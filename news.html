@@ -1,0 +1,332 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEWS | KINDAI SOCCER</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #066898;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  padding: 25px 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+header a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+main {
+  max-width: 1100px;
+  margin: auto;
+  padding: 40px 20px 80px;
+}
+
+h1 {
+  font-size: 70px;
+  margin: 0;
+  font-weight: 900;
+  letter-spacing: 3px;
+}
+
+.subtitle {
+  margin-bottom: 40px;
+}
+
+.tabs {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+
+.tabs button {
+  border: 1px solid white;
+  background: transparent;
+  color: white;
+  padding: 12px 22px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.tabs button.active {
+  background: white;
+  color: #066898;
+}
+
+.news-card {
+  display: flex;
+  background: white;
+  color: #111;
+  margin-bottom: 20px;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.news-card:hover {
+  opacity: 0.9;
+}
+
+.news-photo {
+  width: 35%;
+  min-height: 200px;
+  object-fit: cover;
+  background: #ddd;
+}
+
+.news-info {
+  flex: 1;
+  padding: 25px;
+}
+
+.news-date {
+  color: #777;
+  font-size: 14px;
+}
+
+.category {
+  display: inline-block;
+  background: #066898;
+  color: white;
+  padding: 5px 12px;
+  font-size: 12px;
+}
+
+.news-title {
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 1.5;
+}
+
+.read-more {
+  color: #066898;
+  font-weight: bold;
+  text-align: right;
+}
+
+dialog {
+  border: none;
+  padding: 30px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 85vh;
+  overflow: auto;
+}
+
+dialog::backdrop {
+  background: rgba(0,0,0,0.8);
+}
+
+.close {
+  display: block;
+  margin-left: auto;
+  background: none;
+  border: none;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+#article-photo {
+  width: 100%;
+  max-height: 450px;
+  object-fit: contain;
+}
+
+#article-body {
+  white-space: pre-wrap;
+  line-height: 2;
+}
+
+@media (max-width: 600px) {
+  h1 {
+    font-size: 48px;
+  }
+
+  .news-title {
+    font-size: 17px;
+  }
+
+  .news-info {
+    padding: 15px;
+  }
+
+  .news-photo {
+    min-height: 150px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <a href="index.html">KINDAI SOCCER</a>
+  <nav>
+    <a href="index.html">HOME</a>
+    <a href="team.html">TEAM</a>
+    <a href="players.html">PLAYERS</a>
+    <a href="match.html">MATCH</a>
+    <a href="news.html">NEWS</a>
+  </nav>
+</header>
+
+<main>
+
+<h1>NEWS.</h1>
+<p class="subtitle">最新情報・活動報告</p>
+
+<div class="tabs">
+  <button class="active" onclick="filterNews('ALL', this)">ALL</button>
+  <button onclick="filterNews('MATCH', this)">MATCH</button>
+  <button onclick="filterNews('TEAM', this)">TEAM</button>
+  <button onclick="filterNews('EVENT', this)">EVENT</button>
+</div>
+
+<div id="news-list">読み込み中...</div>
+
+</main>
+
+<dialog id="article">
+  <button class="close" onclick="document.getElementById('article').close()">×</button>
+  <p id="article-date"></p>
+  <h2 id="article-title"></h2>
+  <img id="article-photo" alt="">
+  <p id="article-body"></p>
+  <a id="article-link" target="_blank" rel="noopener noreferrer">関連リンクはこちら</a>
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.5.3/papaparse.min.js"></script>
+
+<script>
+
+const newsURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTRJGCUzHCh7a4Zro-9baH9Vq3kXzCRQj5_dVTv3gqN4lwEuI4yP0mgL0iiot5T7J-X-c6-TOB-tzQ_/pub?gid=1984553964&single=true&output=csv";
+
+function photoURL(url) {
+  const id = url.match(/\/file\/d\/([^/]+)/);
+  return id
+    ? "https://drive.google.com/thumbnail?id=" + id[1] + "&sz=w1200"
+    : url;
+}
+
+function filterNews(category, button) {
+  document.querySelectorAll(".tabs button").forEach(btn => {
+    btn.classList.remove("active");
+  });
+
+  button.classList.add("active");
+
+  document.querySelectorAll(".news-card").forEach(card => {
+    card.style.display =
+      category === "ALL" || card.dataset.category === category
+      ? "flex" : "none";
+  });
+}
+
+function openArticle(row) {
+  document.getElementById("article-date").textContent = row[0];
+  document.getElementById("article-title").textContent = row[2];
+  document.getElementById("article-body").textContent = row[3];
+
+  const photo = document.getElementById("article-photo");
+  photo.hidden = !row[4];
+  if (row[4]) photo.src = photoURL(row[4]);
+
+  const link = document.getElementById("article-link");
+  link.hidden = !/^https?:\/\//i.test(row[5] || "");
+  link.href = link.hidden ? "#" : row[5];
+
+  document.getElementById("article").showModal();
+}
+
+fetch(newsURL)
+  .then(response => {
+    if (!response.ok) throw new Error("通信エラー");
+    return response.text();
+  })
+  .then(csv => {
+
+    const results = Papa.parse(csv, {
+      skipEmptyLines: true
+    });
+
+    const list = document.getElementById("news-list");
+    list.innerHTML = "";
+
+    const rows = results.data.slice(1)
+      .filter(row => row[2] && String(row[6]).trim() === "公開");
+
+    rows.sort((a, b) =>
+      new Date(b[0]) - new Date(a[0])
+    );
+
+    rows.forEach(row => {
+
+      const card = document.createElement("div");
+      card.className = "news-card";
+      card.dataset.category = String(row[1]).trim().toUpperCase();
+
+      
+      card.innerHTML = `
+        <img class="news-photo" alt="">
+        <div class="news-info">
+          <p class="news-date"></p>
+          <span class="category"></span>
+          <h2 class="news-title"></h2>
+          <p class="read-more">READ MORE →</p>
+        </div>
+      `;
+
+      const photo = card.querySelector(".news-photo");
+
+      if (row[4]) {
+        photo.src = photoURL(row[4]);
+      } else {
+        photo.style.display = "none";
+      }
+
+      card.querySelector(".news-date").textContent = row[0];
+      card.querySelector(".category").textContent = row[1];
+      card.querySelector(".news-title").textContent = row[2];
+
+      card.onclick = () => openArticle(row);
+
+      list.appendChild(card);
+    });
+
+    if (rows.length === 0) {
+      list.textContent = "現在お知らせはありません。";
+    }
+
+  })
+  .catch(err => {
+    console.error(err);
+    document.getElementById("news-list").textContent =
+      "お知らせを読み込めませんでした";
+  });
+
+</script>
+</body>
+</html>
