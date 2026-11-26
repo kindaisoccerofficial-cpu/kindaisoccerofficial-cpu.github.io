@@ -1,10 +1,25 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+  <meta property="og:title" content="近畿大学体育会サッカー部｜公式サイト">
+
+<meta property="og:description" content="近畿大学体育会サッカー部の公式サイト。試合日程・試合結果・選手紹介・最新ニュースをお届けします。">
+
+<meta property="og:image" content="https://kindaisoccerofficial-cpu.github.io/ogp.jpg">
+
+<meta property="og:url" content="https://kindaisoccerofficial-cpu.github.io/">
+
+<meta property="og:type" content="website">
+
+<meta property="og:site_name" content="KINDAI SOCCER">
+
+<meta name="twitter:card" content="summary_large_image">
   <meta name="google-site-verification" content="J5iwEQqTs7d1a9x5pT93ql54pq0_CsShrTKDTgUQwG8" />
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>近畿大学体育会サッカー部 公式サイト | KINDAI SOCCER</title>
+  <link rel="icon" type="image/png" href="images/favicon.png">
+<link rel="apple-touch-icon" href="images/favicon.png">
 
 <meta name="description" content="近畿大学体育会サッカー部（近大サッカー部）の公式ホームページ。選手・スタッフ紹介、試合日程、試合結果、リーグ順位表、最新ニュースなどを掲載しています。">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
@@ -410,6 +425,105 @@
   }
 
 }
+/* NEXT MATCH */
+
+.next-match-section {
+  background: #066898;
+  color: white;
+  padding: 70px 5%;
+  text-align: center;
+}
+
+.next-match-section h2 {
+  font-size: 36px;
+  letter-spacing: 4px;
+  margin-bottom: 35px;
+}
+
+.next-match-card {
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 35px 20px;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+
+.next-match-league {
+  font-size: 15px;
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+}
+
+.next-match-date {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.next-match-time {
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+.next-match-teams {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  margin: 40px 0;
+}
+
+.next-match-team {
+  flex: 1;
+  font-size: 26px;
+  font-weight: bold;
+}
+
+.next-match-vs {
+  font-size: 30px;
+  font-weight: bold;
+  opacity: 0.6;
+}
+
+.next-match-venue {
+  font-size: 15px;
+  opacity: 0.8;
+}
+
+.match-more {
+  display: inline-block;
+  color: white;
+  border: 1px solid white;
+  padding: 15px 30px;
+  margin-top: 30px;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.match-more:hover {
+  background: white;
+  color: #10054a;
+}
+
+@media (max-width: 768px) {
+  .next-match-section {
+    padding: 45px 5%;
+  }
+
+  .next-match-section h2 {
+    font-size: 28px;
+  }
+
+  .next-match-teams {
+    gap: 15px;
+  }
+
+  .next-match-team {
+    font-size: 18px;
+  }
+
+  .next-match-date {
+    font-size: 24px;
+  }
+}
 </style>
 </head>
 
@@ -447,7 +561,17 @@
 
 </div>
 
-<section id="news">
+<section class="next-match-section">
+  <h2>NEXT MATCH</h2>
+
+  <div id="next-match">
+    LOADING...
+  </div>
+
+  <a href="match.html" class="match-more">
+    VIEW ALL MATCHES →
+  </a>
+</section><section id="news">
   <h2>NEWS</h2>
   <div id="latest-news">読み込み中...</div>
   <a href="news.html" class="news-more">VIEW ALL NEWS →</a>
@@ -790,6 +914,100 @@ document.querySelectorAll("header nav a").forEach(link => {
     button.setAttribute("aria-expanded", "false");
   });
 });
+</script>
+<script>
+(() => {
+  const nextMatchURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTRJGCUzHCh7a4Zro-9baH9Vq3kXzCRQj5_dVTv3gqN4lwEuI4yP0mgL0iiot5T7J-X-c6-TOB-tzQ_/pub?gid=1000584120&single=true&output=csv";
+
+  const container = document.getElementById("next-match");
+
+  Papa.parse(nextMatchURL, {
+    download: true,
+    skipEmptyLines: true,
+
+    complete: function(results) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const matches = results.data.slice(1)
+        .map(row => {
+          return {
+            date: new Date(row[0]),
+            time: row[1],
+            category: row[2],
+            league: row[3],
+            round: row[4],
+            opponent: row[5],
+            venue: row[6],
+            status: row[9],
+            homeAway: row[10]
+          };
+        })
+        .filter(match =>
+          !isNaN(match.date.getTime()) &&
+          match.date >= today &&
+          match.opponent &&
+          !/終了|中止|延期|finished|cancelled/i.test(match.status || "")
+        )
+        .sort((a, b) =>
+          a.date - b.date ||
+          (a.time || "").localeCompare(b.time || "", undefined, {numeric: true})
+        );
+
+      if (matches.length === 0) {
+        container.textContent = "COMING SOON";
+        return;
+      }
+
+      const match = matches[0];
+
+      const dateText = match.date.toLocaleDateString(
+        "ja-JP",
+        {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          weekday: "short"
+        }
+      );
+
+      container.innerHTML = `
+        <div class="next-match-card">
+
+          <div class="next-match-league"></div>
+          <div class="next-match-date"></div>
+          <div class="next-match-time"></div>
+
+          <div class="next-match-teams">
+            <div class="next-match-team">近畿大学</div>
+            <div class="next-match-vs">VS</div>
+            <div class="next-match-team opponent"></div>
+          </div>
+
+          <div class="next-match-venue"></div>
+
+        </div>
+      `;
+
+      container.querySelector(".next-match-league").textContent =
+        [match.category, match.league, match.round].filter(Boolean).join(" ");
+
+      container.querySelector(".next-match-date").textContent = dateText;
+
+      container.querySelector(".next-match-time").textContent =
+        match.time ? match.time + " KICK OFF" : "KICK OFF 未定";
+
+      container.querySelector(".opponent").textContent = match.opponent;
+
+      container.querySelector(".next-match-venue").textContent =
+        [match.venue, match.homeAway].filter(Boolean).join(" ｜ ");
+    },
+
+    error: function() {
+      container.textContent = "試合情報を取得できませんでした";
+    }
+  });
+})();
 </script>
 </body>
 </html>
