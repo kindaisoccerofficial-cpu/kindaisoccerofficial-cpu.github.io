@@ -5,6 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>近畿大学体育会サッカー部 公式サイト | KINDAI SOCCER</title>
+  <link rel="icon" type="image/png" href="images/favicon.png">
+<link rel="apple-touch-icon" href="images/favicon.png">
 
 <meta name="description" content="近畿大学体育会サッカー部（近大サッカー部）の公式ホームページ。選手・スタッフ紹介、試合日程、試合結果、リーグ順位表、最新ニュースなどを掲載しています。">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
@@ -366,7 +368,51 @@
   background: #ded8ff;
   color: #0772a7;
   font-weight: bold;
-}</style>
+}/* スマホ用メニュー */
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 32px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+
+  header {
+    position: relative;
+    padding: 18px 5%;
+    gap: 0;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  header nav {
+    display: none;
+    width: 100%;
+    background: #1a0176;
+    padding-top: 20px;
+  }
+
+  header nav.active {
+    display: flex;
+    flex-direction: column;
+  }
+
+  header nav a {
+    display: block;
+    padding: 18px 10px;
+    margin: 0;
+    font-size: 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+  }
+
+}
+</style>
 </head>
 
 <body>
@@ -374,6 +420,12 @@
   <header>
     <div class="logo">KINDAI SOCCER</div>
     
+<button class="menu-toggle"
+        aria-label="メニュー"
+        aria-expanded="false"
+        onclick="toggleMenu(this)">
+  ☰
+</button>
 <nav>
   <a href="#home">HOME</a>
   <a href="team.html">TEAM</a>
@@ -721,6 +773,25 @@ function showStandings(category, button) {
     tbody.appendChild(tr);
   });
 }
+</script>
+<script>
+function toggleMenu(button) {
+  const nav = document.querySelector("header nav");
+  const isOpen = nav.classList.toggle("active");
+
+  button.textContent = isOpen ? "×" : "☰";
+  button.setAttribute("aria-expanded", isOpen);
+}
+
+document.querySelectorAll("header nav a").forEach(link => {
+  link.addEventListener("click", () => {
+    document.querySelector("header nav").classList.remove("active");
+
+    const button = document.querySelector(".menu-toggle");
+    button.textContent = "☰";
+    button.setAttribute("aria-expanded", "false");
+  });
+});
 </script>
 </body>
 </html>
