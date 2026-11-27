@@ -524,6 +524,39 @@
     font-size: 24px;
   }
 }
+html {
+  scroll-behavior: smooth;
+}
+
+#contact {
+  scroll-margin-top: 100px;
+}
+#contact {
+  padding: 60px 5%;
+  text-align: center;
+  color: white;
+  scroll-margin-top: 100px;
+}
+
+.contact-info h3 {
+  font-size: 18px;
+  letter-spacing: 3px;
+  margin-top: 30px;
+  margin-bottom: 15px;
+}
+
+.contact-info p {
+  line-height: 1.8;
+}
+
+.contact-info a {
+  color: white;
+  overflow-wrap: anywhere;
+}
+
+html {
+  scroll-behavior: smooth;
+}
 </style>
 </head>
 
@@ -544,7 +577,7 @@
   <a href="players.html">PLAYERS</a>
   <a href="match.html">MATCH</a>
   <a href="news.html">NEWS</a>
-  <a href="#about">ABOUT</a>
+  <a href="index.html#contact">ABOUT</a>
 </nav>
 
   </header>
@@ -608,18 +641,7 @@
   <p id="standings-error"></p>
 </section>
 
-  <section id="match">
-    <h2>MATCH RESULTS</h2>
-    <div class="cards">
-      <a href="match.html" class="match-link">
-  <div class="card">
-    <h3>MATCH LIST</h3>
-    <p>試合日程・結果</p>
-  </div>
-</a>
-    </div>
-  </section>
-
+  
   <section id="sns">
   <h2>FOLLOW US</h2>
   <p>近畿大学体育会サッカー部 公式SNS</p>
@@ -706,7 +728,7 @@ fetch(homeNewsURL)
   });
 </script>
 <section id="contact">
-  <h2>CONTACT</h2>
+  <h2>INQUIRIES</h2>
 
   <p>近畿大学体育会サッカー部へのお問い合わせは、
     下記よりお願いいたします。</p>
@@ -1009,5 +1031,21 @@ document.querySelectorAll("header nav a").forEach(link => {
   });
 })();
 </script>
+<section id="contact">
+  <h2>CONTACT</h2>
+
+  <div class="contact-info">
+    <h3>ADDRESS</h3>
+    <p>〒577-0805</p>
+    <p>大阪府東大阪市宝持3丁目11-35</p>
+    <p>近畿大学クラブセンター</p>
+    <p>体育会サッカー部</p>
+
+    <h3>EMAIL</h3>
+    <a href="mailto:kindai.soccer.official@gmail.com">
+      kindai.soccer.official@gmail.com
+    </a>
+  </div>
+</section>
 </body>
 </html>
